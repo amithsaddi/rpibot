@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs/RPiSolution/v15
+/RpiWebServer/bin/Debug
+/packages/Newtonsoft.Json.10.0.3
+/RpiWebServer/obj/Debug

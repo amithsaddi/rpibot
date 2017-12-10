@@ -13,10 +13,10 @@ namespace RpiWebServer
     {
         static void Main(string[] args)
         {
-            //StartWebServer(args);
+            StartWebServer(args);
 
             //PiTest.TestGpio();
-            PiTest.TestDistanceSensor();
+            //PiTest.TestDistanceSensor();
             //PiTest.TestPirSensor();
         }
         
