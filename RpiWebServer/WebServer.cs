@@ -1,4 +1,6 @@
-﻿using RpiWebServer.Helpers;
+﻿using RpiWebServer.Controllers;
+using RpiWebServer.Helpers;
+using RpiWebServer.Sensors;
 using System;
 using System.Net;
 using System.Text;
@@ -6,24 +8,15 @@ using System.Threading;
 
 namespace RpiWebServer
 {
-    public class WebServer
+    public class WebServer : PiCarHelper
     {
         private readonly HttpListener _listener = new HttpListener();
 
-        public WebServer(string prefixes)
+        public WebServer(string prefixes, IL298NMotorController iL298NMotorController, IUltraSonicDistanceSensor ultraSonicDistanceSensor) : base(iL298NMotorController, ultraSonicDistanceSensor)
         {
-            if (!HttpListener.IsSupported)
-                throw new NotSupportedException(
-                    "Needs Windows XP SP2, Server 2003 or later.");
-
-            // URI prefixes are required, for example 
-            // "http://localhost:8080/index/".
-            if (prefixes == null || prefixes.Length == 0)
-                throw new ArgumentException("prefixes");            
             
-            _listener.Prefixes.Add(prefixes);    
-            
-           Start();
+            _listener.Prefixes.Add(prefixes);
+            Start();
         }        
 
         public void Run()
@@ -41,13 +34,15 @@ namespace RpiWebServer
                             try
                             {
                                 //Request
-                                HttpHelper.RequestProcess(ctx);
+                                RequestProcess(ctx);
 
                                 //Response
-                                string rstr = HttpHelper.ResultString;
+                                string rstr = ResultString;
                                 ctx = ResponseProcess(ctx, rstr);                                
                             }
-                            catch { } // suppress any exceptions
+                            catch(Exception ex)
+                            {
+                            } // suppress any exceptions
                             finally
                             {
                                 // always close the stream
@@ -64,6 +59,8 @@ namespace RpiWebServer
         {
             _listener.Stop();
             _listener.Close();
+
+            CleanUp();
         }
 
         public void Start()

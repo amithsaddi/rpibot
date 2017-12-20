@@ -40,7 +40,7 @@ namespace RpiWebServer.Helpers
                     PiHelper.CleanUpAll();
                     break;
                 case "GET":
-                    PiHelper.GetData();
+                    PiHelper.GetData();                    
                     break;
                 default:
                     break;
@@ -64,8 +64,10 @@ namespace RpiWebServer.Helpers
 
         private static string SendResponse2(HttpListenerRequest request)
         {
-            string text = File.ReadAllText(@"source/html/Page1.html");
-            return string.Format(text);
+            //string text = File.ReadAllText(@"source/html/index.html");
+            string text = File.ReadAllText(@"source/html/index.html");
+            return text;
+            //return string.Format(text);
         }
 
         private static string SystemInfo()
@@ -79,5 +81,5 @@ namespace RpiWebServer.Helpers
             
             return sb.ToString();
         }
-    }
+    }   
 }

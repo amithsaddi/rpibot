@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 10%;
+        }
+
+        input[type="button"] {
+            -webkit-appearance: none;
+            border-radius: 0;
+        }
+
+
+    </style>
+    <script>
+
+        function PostFn(direction) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("demo").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("POST", "/" + direction, true);
+            xhttp.send();
+        }
+
+        function PostFnForAuto(direction) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("demo").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("POST", "/" + direction, true);
+            xhttp.send();
+        }
+
+        function GetFn(funcName) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    if (funcName == "pinstatus") {
+                        document.getElementById("pinstatus").value = this.responseText;
+                    } else {
+                        document.getElementById("distancestatus").value = this.responseText;
+                    }
+                }
+            };
+            xhttp.open("GET", funcName, true);
+            xhttp.send();
+        }
+
+    </script>
+</head>
+
+<body>
+
+
+    <!--<iframe width="1020" height="800" src="https://www.youtube.com/embed/RtU_mdL2vBM" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>-->
+    <div>
+        <input type="button" id="demo" onclick="GetFn('distance')" value="Get Distance">
+        <textarea id="distancestatus" rows="1" cols="50"> </textarea>
+    </div>
+
+    <div>
+        <input type="button" id="getPin" onclick="GetFn('pinstatus')" value="Get Pin Status">
+        <textarea id="pinstatus" rows="5" cols="100"> </textarea>
+    </div>   
+    
+    <table style="width:100%; max-width: 1000px; height:1000px;">
+        <tr>
+            <td></td>
+            <td>
+                <form action="/forward" method="post" id="forward">
+                    <input type="button" onclick="PostFn('forward')" value=" &#8679 " style="color: green; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <form action="/left" method="post" id="left">
+                    <input type="button" onclick="PostFn('left')" value="&#8678" style="color: green; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+            <td>
+                <form action="/stop" method="post" id="stop">
+                    <input type="button" onclick="PostFn('stop')" value="&#11036" style="color: black; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+            <td> </td>
+            <td>
+                <form action="/right" method="post" id="right">
+                    <input type="button" onclick="PostFn('right')" value="&#8680" style="color: green; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <form action="/backward" method="post" id="backward">
+                    <input type="button" onclick="PostFn('backward')" value=" &#8681 " style="color: green; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+            <td></td>
+        </tr>
+    </table>   
+
+    <div></div>
+    <br />
+    <br />
+    <br />
+    <div></div>
+
+    <table style="width:100%; max-width: 1000px; height:1000px;">
+        <tr>
+            <td></td>
+            <td>
+                <form action="/forward" method="post" id="forward">
+                    <input type="button" onclick="PostFn('forward')" value=" &#8679 " style="color: green; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <form action="/forward" method="post" id="forward">
+                    <input type="button" onclick="PostFn('forward')" value=" &#8679 " style="color: green; font-size : 100px; width: 200px; height: 200px;">
+                </form>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+
+</body>
+</html>

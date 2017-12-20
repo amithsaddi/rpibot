@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using RpiWebServer.GpioControls;
 using RpiWebServer.Sensors;
+using RpiWebServer.Controllers;
 
 namespace RpiWebServer
 {
@@ -66,6 +67,26 @@ namespace RpiWebServer
             }
 
             pirSensor.Dispose();
+        }
+
+        public static void TestDummyController()
+        {
+            L298NMotorController motorController = new L298NMotorController();
+
+            while (!(Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape))
+            {                
+                motorController.Forward();
+                Thread.Sleep(5000);
+                motorController.Right();
+                Thread.Sleep(2000);
+                motorController.Left();
+                Thread.Sleep(2000);
+                motorController.Reverse();
+                Thread.Sleep(5000);
+                motorController.Left();
+                Thread.Sleep(2000);
+            }
+            motorController.Dispose();
         }
 
         public static void GenerateSampleXml()

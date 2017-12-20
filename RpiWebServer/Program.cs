@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Threading;
 using RpiWebServer.GpioControls;
 using RpiWebServer.Sensors;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using RpiWebServer.Controllers;
 
 namespace RpiWebServer
 {
@@ -13,29 +17,45 @@ namespace RpiWebServer
     {
         static void Main(string[] args)
         {
-            StartWebServer(args);
+            var cmdLineParser = ParseArguments(args);
+            StartWebServer(cmdLineParser);
 
-            //PiTest.TestGpio();
-            //PiTest.TestDistanceSensor();
-            //PiTest.TestPirSensor();
+            IL298NMotorController iL298NMotorController = new L298NMotorController();
+            IUltraSonicDistanceSensor ultraSonicDistanceSensor = new UltraSonicDistanceSensor();
+            AutonomousMode autonomousMode = new AutonomousMode(iL298NMotorController, ultraSonicDistanceSensor);
+            //autonomousMode.RunInAutoMode(3);
+            Task t = Task.Run(() => autonomousMode.RunInAutoMode(3));
+            Thread.Sleep(60000);
+            AutonomousMode.externalCancelRequest = true;
+
+            //
+            PiTest.TestDistanceSensor();
         }
-        
-        private static void StartWebServer(string[] args)
+
+        private static void StartWebServer(CmdLineParser cmdParser)
         {
-            WebServer ws;
-            if (args.Length == 0) {
-                ws = new WebServer(string.Format("http://localhost:8000/index/"));
+            WebServer ws = null;
+            IL298NMotorController iL298NMotorController = new L298NMotorController();
+            IUltraSonicDistanceSensor ultraSonicDistanceSensor = new UltraSonicDistanceSensor();
+
+
+            if (cmdParser != null){                
+                ws = new WebServer(string.Format("http://{0}:{1}/", cmdParser.HostIp, cmdParser.HostPort), iL298NMotorController, ultraSonicDistanceSensor);
             }
-            else {
-                string ip = args[0];
-                string port = args[1];
-                ws = new WebServer(string.Format("http://{0}:{1}/index/", ip, port));
-            }
+            
             ws.Run();
             Console.WriteLine("A simple webserver. Press a key to quit.");
             Console.ReadKey();
             ws.Stop();
-            PiHelper.CleanUpAll();
+            Console.WriteLine("Stopped gracefully. Press a key to quit.");
+            Console.ReadKey();
+        }
+
+        private static CmdLineParser ParseArguments(string[] args)
+        {
+            Dictionary<string, string> dict = args.Select(s => s.Split(':')).ToDictionary(s => s[0].Replace("/", ""), s => s[1]);
+            CmdLineParser cmdLineParser = CmdLineParser.DictionaryToObject<CmdLineParser>(dict);
+            return cmdLineParser;
         }
     }    
 }

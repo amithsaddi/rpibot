@@ -10,10 +10,10 @@ namespace RpiWebServer.Sensors
 {
     //Works with 'HC-SR04 Sonar Module Distance Sensor'
     //https://stackoverflow.com/questions/30124861/ultrasonic-sensor-raspberry-pi-2-c-sharp-net
-    public class UltraSonicDistanceSensor : IDisposable
+    public class UltraSonicDistanceSensor : IDisposable, IUltraSonicDistanceSensor
     {
-        private static long NoSignal;
-        private static long Signal;
+        private long NoSignal;
+        private long Signal;
 
         public OutputGpioPin OutputPin;
         public InputGpioPin inputPin;
@@ -54,6 +54,14 @@ namespace RpiWebServer.Sensors
             return distance;
         }
 
+        public string GetPinStatus()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(string.Format("Pin : {0}, Direction : {1} Status : {2} ", OutputPin.GpioPinNumber, OutputPin.Direction, OutputPin.State.ToString()));
+            sb.AppendLine(string.Format("Pin : {0}, Direction : {1} Status : {2} ", inputPin.GpioPinNumber, inputPin.Direction, "N/A"));
+
+            return sb.ToString();
+        }
         public void CleanUp()
         {
             OutputPin.Cleanup();
